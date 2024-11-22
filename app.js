@@ -12,7 +12,7 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.exibirMenuPrincipal();
+            const opcao = Menu.menuPrincipal();
 
             switch (opcao) {
                 case 1:
@@ -21,7 +21,7 @@ class App {
                 case 2:
                     this.gerenciarAgenda();
                     break;
-                case 0:
+                case 3:
                     continuar = false;
                     console.log("Programa encerrado.");
                     break;
@@ -35,19 +35,22 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.exibirMenuPacientes();
+            const opcao = Menu.menuPacientes();
 
             switch (opcao) {
                 case 1:
                     this.cadastro.adicionarPaciente();
                     break;
                 case 2:
-                    this.cadastro.listarPacientes();
-                    break;
-                case 3:
                     this.cadastro.excluirPaciente();
                     break;
-                case 0:
+                case 3:
+                    this.cadastro.listarPacientes("cpf", this.agenda);
+                    break;
+                case 4:
+                    this.cadastro.listarPacientes("nome", this.agenda);
+                    break;
+                case 5:
                     continuar = false;
                     break;
                 default:
@@ -60,19 +63,19 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.exibirMenuAgenda();
+            const opcao = Menu.menuAgenda();
 
             switch (opcao) {
                 case 1:
                     this.agenda.agendarConsulta();
                     break;
                 case 2:
-                    this.agenda.listarConsultas();
-                    break;
-                case 3:
                     this.agenda.cancelarConsulta();
                     break;
-                case 0:
+                case 3:
+                    this.agenda.listarConsultas();
+                    break;
+                case 4:
                     continuar = false;
                     break;
                 default:

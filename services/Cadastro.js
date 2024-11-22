@@ -19,8 +19,13 @@ export default class Cadastro {
         }
 
         // Valida data de nascimento
-        if (!Validador.valida_data(dataNascimento) || !Validador.valida_idade(dataNascimento)) {
-            console.log("Data de nascimento inválida ou paciente tem menos de 13 anos.\n");
+        if (!Validador.valida_data(dataNascimento)) {
+            console.log("Data de nascimento inválida.\n");
+            return false;
+        }
+
+        if (!Validador.valida_idade(dataNascimento)) {
+            console.log("O paciente tem menos de 13 anos.\n");
             return false;
         }
 

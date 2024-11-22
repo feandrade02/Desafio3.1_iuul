@@ -85,7 +85,7 @@ export default class Agenda {
 
             consultasFiltradas = this.consultas.filter(consulta => {
                 const dataConsulta = DateTime.fromFormat(consulta.data, "dd/MM/yyyy");
-                return dataConsulta >= inicio && dataConsulta <= fim;
+                if (!(dataConsulta >= inicio && dataConsulta <= fim)) return false;
             });
         }
 
@@ -94,7 +94,7 @@ export default class Agenda {
             .sort((a, b) => {
                 const dataA = DateTime.fromFormat(a.data, "dd/MM/yyyy").toMillis();
                 const dataB = DateTime.fromFormat(b.data, "dd/MM/yyyy").toMillis();
-                return dataA - dataB || a.horaInicio - b.horaInicio;
+                if (!(dataA - dataB || a.horaInicio - b.horaInicio)) return false;
             })
             .forEach(consulta => {
                 console.log(
