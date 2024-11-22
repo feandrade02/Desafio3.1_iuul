@@ -49,7 +49,7 @@ class Validador {
    
        // Verifica se o CPF já está cadastrado
        if (cpf in lista_cpfs) {
-           console.log("Esse CPF já foi cadastrado!\n")
+           console.log("Erro: CPF já cadastrado.\n")
            return false;
        }
    
@@ -74,7 +74,7 @@ class Validador {
     
         // Verifica se a data é válida
         if (!nascimento.isValid) {
-           console.log("Data de nascimento inválida. Use o formato DD/MM/AAAA.");
+           console.log("Erro: Data de nascimento inválida. Use o formato DD/MM/AAAA.");
            return false;
         }
     

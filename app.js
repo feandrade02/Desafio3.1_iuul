@@ -42,7 +42,7 @@ class App {
                     this.cadastro.adicionarPaciente();
                     break;
                 case 2:
-                    this.cadastro.excluirPaciente();
+                    this.cadastro.excluirPaciente(this.agenda);
                     break;
                 case 3:
                     this.cadastro.listarPacientes("cpf", this.agenda);
@@ -67,7 +67,7 @@ class App {
 
             switch (opcao) {
                 case 1:
-                    this.agenda.agendarConsulta();
+                    this.agenda.agendarConsulta(this.cadastro);
                     break;
                 case 2:
                     this.agenda.cancelarConsulta();

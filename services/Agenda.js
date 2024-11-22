@@ -1,59 +1,96 @@
 import { DateTime } from "luxon";
 import Validador from "./utils/Validador.js";
 import Consulta from "./models/Consulta.js";
+import promptSync from "prompt-sync";
 
 export default class Agenda {
     constructor() {
         this.consultas = []; // Lista de consultas
+        this.prompt = promptSync();
     }
 
-    agendarConsulta(cpf, data, horaInicio, horaFim) {
-        // Validações iniciais
-        if (!Validador.valida_data(data)) {
-            console.log("Data inválida. Use o formato DD/MM/AAAA.");
-            return false;
+    agendarConsulta(cadastro) {
+
+        const cpf = this.prompt("CPF: ");
+        if (!Validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
+            console.log("Erro: paciente não cadastrado.\n");
+            return;
         }
 
-        if (!this.validaHorario(horaInicio) || !this.validaHorario(horaFim)) {
-            console.log("Horário inválido. Use o formato HHMM com intervalos de 15 minutos.");
-            return false;
+        const data = this.prompt("Data da consulta: ");
+        // Validações iniciais
+        if (!Validador.valida_data(data)) {
+            console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
+            return;
+        }
+
+        const horaInicio = this.prompt("Hora inicial: ");
+        if (!this.validaHorario(horaInicio)) {
+            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+            return;
+        }
+
+        const horaFim = this.prompt("Hora final: ");
+        if (!this.validaHorario(horaFim)){
+            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+            return;
         }
 
         const horaInicialLuxon = DateTime.fromFormat(horaInicio, "HHmm");
         const horaFinalLuxon = DateTime.fromFormat(horaFim, "HHmm");
 
         if (horaFinalLuxon <= horaInicialLuxon) {
-            console.log("O horário final deve ser maior que o inicial.");
-            return false;
+            console.log("Erro: O horário final deve ser maior que o inicial.\n");
+            return;
         }
 
         // Verifica sobreposição de horários
         if (this.temConflito(data, horaInicio, horaFim)) {
-            console.log("Conflito de horários com outro agendamento.");
-            return false;
+            console.log("Erro: Já existe uma consulta agendada nesse horário.\n");
+            return;
         }
 
         // Verifica se o paciente já possui uma consulta futura
         if (this.temConsultaFutura(cpf)) {
-            console.log("Paciente já possui um agendamento futuro.");
-            return false;
+            console.log("Erro: O paciente já possui um agendamento futuro.\n");
+            return;
         }
 
         // Adiciona a consulta
         this.consultas.push(new Consulta(cpf, data, horaInicio, horaFim));
 
-        console.log("Consulta agendada com sucesso!");
-        return true;
+        console.log("Agendamento realizado com sucesso!\n");
+        return;
     }
 
-    cancelarConsulta(cpf, data, horaInicio) {
+    cancelarConsulta() {
+
+        const cpf = this.prompt("CPF: ");
+        if (!Validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
+            console.log("Erro: paciente não cadastrado.\n");
+            return;
+        }
+
+        const data = this.prompt("Data da consulta: ");
+        // Validações iniciais
+        if (!Validador.valida_data(data)) {
+            console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
+            return;
+        }
+
+        const horaInicio = this.prompt("Hora inicial: ");
+        if (!this.validaHorario(horaInicio)) {
+            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+            return;
+        }
+
         // Verifica se a consulta existe
         const index = this.consultas.findIndex(
             consulta => consulta.cpf === cpf && consulta.data === data && consulta.horaInicio === horaInicio
         );
 
         if (index === -1) {
-            console.log("Consulta não encontrada.");
+            console.log("Erro: Agendamento não encontrado.\n");
             return false;
         }
 
@@ -66,13 +103,13 @@ export default class Agenda {
         });
 
         if (dataConsulta <= agora) {
-            console.log("Não é possível cancelar uma consulta passada.");
+            console.log("Erro: Não é possível cancelar uma consulta passada.\n");
             return false;
         }
 
         // Remove a consulta
         this.consultas.splice(index, 1);
-        console.log("Consulta cancelada com sucesso!");
+        console.log("Consulta cancelada com sucesso!\n");
         return true;
     }
 

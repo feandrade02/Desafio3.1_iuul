@@ -1,52 +1,62 @@
 import Validador from "./utils/Validador.js";
 import Paciente from "./models/Paciente.js";
+import promptSync from "prompt-sync";
 
 export default class Cadastro {
     constructor() {
         this.pacientes = []; // Lista de pacientes
+        this.prompt = promptSync();
     }
 
-    adicionarPaciente(cpf, nome, dataNascimento) {
+    adicionarPaciente() {
+
+        const cpf = this.prompt("CPF: ");
+        const nome = this.prompt("Nome: ");
+        const dataNascimento = this.prompt("Data de nascimento: ");
+
         // Valida CPF
         if (!Validador.valida_cpf(this.pacientes.map(p => p.cpf), cpf)) {
-            console.log("CPF inválido ou já cadastrado.\n");
-            return false;
+            console.log("Erro: CPF inválido.\n");
+            return;
         }
 
         // Valida nome
         if (!Validador.valida_nome(nome)) {
-            return false;
+            return;
         }
 
         // Valida data de nascimento
         if (!Validador.valida_data(dataNascimento)) {
-            console.log("Data de nascimento inválida.\n");
-            return false;
+            console.log("Erro: Data de nascimento inválida. Use o formato DD/MM/AAAA.\n");
+            return;
         }
 
         if (!Validador.valida_idade(dataNascimento)) {
-            console.log("O paciente tem menos de 13 anos.\n");
-            return false;
+            console.log("Erro: O paciente deve ter pelo menos 13 anos.\n");
+            return;
         }
 
         // Adiciona paciente à lista
         this.pacientes.push(new Paciente(cpf, nome, dataNascimento));
 
         console.log("Paciente cadastrado com sucesso!\n");
-        return true;
+        return;
     }
 
-    excluirPaciente(cpf, agenda) {
+    excluirPaciente(agenda) {
+
+        const cpf = this.prompt("CPF: ");
+
         // Verifica se o paciente existe
         const index = this.pacientes.findIndex(paciente => paciente.cpf === cpf);
         if (index === -1) {
-            console.log("Paciente não encontrado.\n");
+            console.log("Erro: Paciente não cadastrado.\n");
             return false;
         }
 
         // Verifica se o paciente tem consultas futuras
         if (agenda.temConsultaFutura(cpf)) {
-            console.log("Não é possível excluir o paciente, pois ele possui consultas futuras agendadas.\n");
+            console.log("Erro: o paciente está agendado.\n");
             return false;
         }
 
