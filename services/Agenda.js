@@ -7,19 +7,20 @@ export default class Agenda {
     constructor() {
         this.consultas = []; // Lista de consultas
         this.prompt = promptSync();
+        this.validador = new Validador();
     }
 
     agendarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!Validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
+        if (!this.validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
             console.log("Erro: paciente não cadastrado.\n");
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
-        if (!Validador.valida_data(data)) {
+        if (!this.validador.valida_data(data)) {
             console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
             return;
         }
@@ -63,17 +64,17 @@ export default class Agenda {
         return;
     }
 
-    cancelarConsulta() {
+    cancelarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!Validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
+        if (!this.validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
             console.log("Erro: paciente não cadastrado.\n");
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
-        if (!Validador.valida_data(data)) {
+        if (!this.validador.valida_data(data)) {
             console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
             return;
         }

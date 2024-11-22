@@ -6,6 +6,7 @@ export default class Cadastro {
     constructor() {
         this.pacientes = []; // Lista de pacientes
         this.prompt = promptSync();
+        this.validador = new Validador();
     }
 
     adicionarPaciente() {
@@ -15,23 +16,23 @@ export default class Cadastro {
         const dataNascimento = this.prompt("Data de nascimento: ");
 
         // Valida CPF
-        if (!Validador.valida_cpf(this.pacientes.map(p => p.cpf), cpf)) {
+        if (!this.validador.valida_cpf(this.pacientes.map(p => p.cpf), cpf)) {
             console.log("Erro: CPF inválido.\n");
             return;
         }
 
         // Valida nome
-        if (!Validador.valida_nome(nome)) {
+        if (!this.validador.valida_nome(nome)) {
             return;
         }
 
         // Valida data de nascimento
-        if (!Validador.valida_data(dataNascimento)) {
+        if (!this.validador.valida_data(dataNascimento)) {
             console.log("Erro: Data de nascimento inválida. Use o formato DD/MM/AAAA.\n");
             return;
         }
 
-        if (!Validador.valida_idade(dataNascimento)) {
+        if (!this.validador.valida_idade(dataNascimento)) {
             console.log("Erro: O paciente deve ter pelo menos 13 anos.\n");
             return;
         }

@@ -7,7 +7,7 @@ export default class Consulta {
     constructor(cpf_paciente, data_consulta, hora_inicial, hora_final) {
         this.#cpf_paciente = cpf_paciente;
         this.#data_consulta = data_consulta;
-        this.hora_inicial = hora_inicial;
+        this.#hora_inicial = hora_inicial;
         this.#hora_final = hora_final;
     }
 
