@@ -1,4 +1,4 @@
-class Paciente {
+export default class Paciente {
     #nome;
     #cpf;
     #data_nasc;

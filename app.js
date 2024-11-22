@@ -1,18 +1,19 @@
-import { Menu } from './utils/Menu.js';
-import { Cadastro } from './services/Cadastro.js';
-import { Agenda } from './services/Agenda.js';
+import Menu from './utils/Menu.js';
+import Cadastro from './services/Cadastro.js';
+import Agenda from './services/Agenda.js';
 
 class App {
     constructor() {
         this.cadastro = new Cadastro();
         this.agenda = new Agenda();
+        this.menu = new Menu();
     }
 
     iniciar() {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuPrincipal();
+            const opcao = this.menu.menuPrincipal();
 
             switch (opcao) {
                 case 1:
@@ -35,7 +36,7 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuPacientes();
+            const opcao = this.menu.menuPacientes();
 
             switch (opcao) {
                 case 1:
@@ -63,7 +64,7 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuAgenda();
+            const opcao = this.menu.menuAgenda();
 
             switch (opcao) {
                 case 1:

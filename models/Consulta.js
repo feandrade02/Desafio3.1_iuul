@@ -1,4 +1,4 @@
-class Consulta {
+export default class Consulta {
     #cpf_paciente;
     #data_consulta;
     #hora_inicial;

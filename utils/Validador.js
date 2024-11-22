@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-class Validador {
+export default class Validador {
 
     valida_nome(nome) {
         if (typeof nome !== 'string' || nome.length < 5) {
