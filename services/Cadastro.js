@@ -12,33 +12,34 @@ export default class Cadastro {
     adicionarPaciente() {
 
         const cpf = this.prompt("CPF: ");
-        const nome = this.prompt("Nome: ");
-        const dataNascimento = this.prompt("Data de nascimento: ");
-
         // Valida CPF
         if (!this.validador.valida_cpf(this.pacientes.map(p => p.cpf), cpf)) {
             console.log("Erro: CPF inválido.\n");
             return;
         }
 
+        const nome = this.prompt("Nome: ");
         // Valida nome
         if (!this.validador.valida_nome(nome)) {
             return;
         }
 
+        const dataNascimento = this.prompt("Data de nascimento: ");
+
+        const paciente = new Paciente(nome, cpf, dataNascimento);
+
         // Valida data de nascimento
-        if (!this.validador.valida_data(dataNascimento)) {
-            console.log("Erro: Data de nascimento inválida. Use o formato DD/MM/AAAA.\n");
+        if (!this.validador.valida_data(paciente.data_nasc)) {
             return;
         }
 
-        if (!this.validador.valida_idade(dataNascimento)) {
-            console.log("Erro: O paciente deve ter pelo menos 13 anos.\n");
+
+        if (!this.validador.valida_idade(paciente.idade)) {
             return;
         }
 
         // Adiciona paciente à lista
-        this.pacientes.push(new Paciente(cpf, nome, dataNascimento));
+        this.pacientes.push(paciente);
 
         console.log("Paciente cadastrado com sucesso!\n");
         return;
@@ -77,15 +78,18 @@ export default class Cadastro {
         });
 
         // Exibe os pacientes
-        console.log("Lista de Pacientes:");
+        console.log("\n------------------------------------------------------------");
+        console.log("CPF         Nome                              Dt.Nasc. Idade");
+        console.log("------------------------------------------------------------");
         pacientesOrdenados.forEach(paciente => {
-            console.log(`CPF: ${paciente.cpf}, Nome: ${paciente.nome}, Data de Nascimento: ${paciente.dataNascimento}`);
+            console.log(`${paciente.cpf} ${paciente.nome}                           ${paciente.data_nasc}  ${paciente.idade}`);
 
             // Verifica se o paciente tem uma consulta futura
             const consultaFutura = agenda.consultas.find(consulta => consulta.cpf === paciente.cpf);
             if (consultaFutura) {
-                console.log(`  Agendado para: ${consultaFutura.data} das ${consultaFutura.horaInicio} às ${consultaFutura.horaFim}`);
+                console.log(`            Agendado para: ${consultaFutura.data}\n            ${consultaFutura.horaInicio} às ${consultaFutura.horaFim}`);
             }
         });
+        console.log("------------------------------------------------------------");
     }
 }

@@ -4,11 +4,11 @@ export default class Validador {
 
     valida_nome(nome) {
         if (typeof nome !== 'string' || nome.length < 5) {
-            console.log("O nome deve ter pelo menos 5 caracteres.\n");
+            console.log("\nErro: O nome deve ter pelo menos 5 caracteres.\n");
             return false
         }
         if (!/^[A-Za-z\s]+$/.test(nome)) {
-            console.log("O nome deve conter apenas letras.\n");
+            console.log("\nErro: O nome deve conter apenas letras.\n");
             return false
         }
     
@@ -49,7 +49,7 @@ export default class Validador {
    
        // Verifica se o CPF já está cadastrado
        if (cpf in lista_cpfs) {
-           console.log("Erro: CPF já cadastrado.\n")
+           console.log("\nErro: CPF já cadastrado.\n")
            return false;
        }
    
@@ -57,34 +57,23 @@ export default class Validador {
    }
 
    valida_data(data) {
-        // Tenta criar um objeto DateTime a partir da string no formato "dd/MM/yyyy"
+    
         const formato = "dd/MM/yyyy";
         const dataLuxon = DateTime.fromFormat(data, formato);
 
-        // Verifica se a data é válida e está no formato correto
-        return dataLuxon.isValid;
+        if (!dataLuxon.isValid) {
+            console.log("\nErro: Data inválida. Use o formato DD/MM/AAAA.");
+            return false;
+        }
+        return true;
     }
 
-    valida_idade(data_nasc) {
-        // Formato esperado da data de nascimento
-        const formato = "dd/MM/yyyy";
-   
-        // Tenta criar um objeto DateTime com a data fornecida
-        const nascimento = DateTime.fromFormat(data_nasc, formato);
-    
-        // Verifica se a data é válida
-        if (!nascimento.isValid) {
-           console.log("Erro: Data de nascimento inválida. Use o formato DD/MM/AAAA.");
-           return false;
+    valida_idade(idade) {
+        if (idade < 13) {
+            console.log("\nErro: paciente deve ter pelo menos 13 anos.")
+            return false;
         }
-    
-        // Obtém a data atual
-        const hoje = DateTime.now();
-    
-        // Calcula a diferença em anos entre a data de nascimento e hoje
-        const idade = hoje.diff(nascimento, "years").years;
-    
-        // Retorna true se a idade for maior ou igual a 13
-        return idade >= 13;
+
+        return true;
    }
 }
