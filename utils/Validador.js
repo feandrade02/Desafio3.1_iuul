@@ -15,10 +15,11 @@ export default class Validador {
         return true
     }
 
-    valida_cpf(lista_cpfs, cpf) {
+    valida_cpf(cpf) {
         // Verifica se o CPF tem 11 dígitos ou se todos são iguais
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-           return false;
+            console.log("\nErro: CPF inválido.\n");
+            return false;
        }
    
        // Calcula o primeiro dígito verificador (J)
@@ -31,7 +32,8 @@ export default class Validador {
    
        // Verifica o primeiro dígito
        if (parseInt(cpf.charAt(9)) !== J) {
-           return false;
+        console.log("\nErro: CPF inválido.\n");
+        return false;
        }
    
        // Calcula o segundo dígito verificador (K)
@@ -44,16 +46,29 @@ export default class Validador {
    
        // Verifica o segundo dígito
        if (parseInt(cpf.charAt(10)) !== K) {
-           return false;
-       }
-   
-       // Verifica se o CPF já está cadastrado
-       if (cpf in lista_cpfs) {
-           console.log("\nErro: CPF já cadastrado.\n")
-           return false;
+        console.log("\nErro: CPF inválido.\n");
+        return false;
        }
    
        return true;
+   }
+
+   consulta_cpf_cadastrado(lista_cpfs, cpf) {
+    // Verifica se o CPF já está cadastrado
+    if (lista_cpfs.includes(cpf)) {
+        console.log("\nErro: CPF já cadastrado.\n")
+        return false;
+    }
+    return true;
+   }
+
+   consulta_cpf_nao_cadastrado(lista_cpfs, cpf) {
+    // Verifica se o CPF não está cadastrado
+    if (!lista_cpfs.includes(cpf)) {
+        console.log("\nErro: CPF não cadastrado.\n")
+        return false;
+    }
+    return true;
    }
 
    valida_data(data) {
@@ -76,4 +91,20 @@ export default class Validador {
 
         return true;
    }
+
+    validaHorario(horario) {
+        if (!(/^[0-1][0-9][0-5][0-9]$/.test(horario) && parseInt(horario.slice(0, 2)) >= 8 && parseInt(horario.slice(0, 2)) < 19)) {
+            console.log("\nErro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n")
+            return false;
+        };
+        return true;
+    }
+
+    valida_opcao_listagem_agenda(opcao) {
+        if (opcao != "P" && opcao != "T") {
+            console.log("\nErro: opção inválida.\n");
+            return false;
+        }
+        return true;
+    }
 }

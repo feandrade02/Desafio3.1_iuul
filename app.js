@@ -24,10 +24,10 @@ class App {
                     break;
                 case 3:
                     continuar = false;
-                    console.log("Programa encerrado.");
+                    console.log("\nPrograma encerrado.");
                     break;
                 default:
-                    console.log("Opção inválida. Tente novamente.");
+                    console.log("\nErro: Opção inválida. Tente novamente.\n");
             }
         }
     }
@@ -55,7 +55,7 @@ class App {
                     continuar = false;
                     break;
                 default:
-                    console.log("Opção inválida. Tente novamente.");
+                    console.log("\nErro: Opção inválida. Tente novamente.\n");
             }
         }
     }
@@ -71,7 +71,7 @@ class App {
                     this.agenda.agendarConsulta(this.cadastro);
                     break;
                 case 2:
-                    this.agenda.cancelarConsulta();
+                    this.agenda.cancelarConsulta(this.cadastro);
                     break;
                 case 3:
                     this.agenda.listarConsultas();
@@ -80,7 +80,7 @@ class App {
                     continuar = false;
                     break;
                 default:
-                    console.log("Opção inválida. Tente novamente.");
+                    console.log("\nErro: Opção inválida. Tente novamente.\n");
             }
         }
     }

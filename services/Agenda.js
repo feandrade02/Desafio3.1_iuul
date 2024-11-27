@@ -13,27 +13,27 @@ export default class Agenda {
     agendarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!this.validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
-            console.log("Erro: paciente não cadastrado.\n");
+        if (!this.validador.valida_cpf(cpf)) {
+            return;
+        }
+
+        if (!this.validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
         if (!this.validador.valida_data(data)) {
-            console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
             return;
         }
 
         const horaInicio = this.prompt("Hora inicial: ");
-        if (!this.validaHorario(horaInicio)) {
-            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+        if (!this.validador.validaHorario(horaInicio)) {
             return;
         }
 
         const horaFim = this.prompt("Hora final: ");
-        if (!this.validaHorario(horaFim)){
-            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+        if (!this.validador.validaHorario(horaFim)){
             return;
         }
 
@@ -41,24 +41,33 @@ export default class Agenda {
         const horaFinalLuxon = DateTime.fromFormat(horaFim, "HHmm");
 
         if (horaFinalLuxon <= horaInicialLuxon) {
-            console.log("Erro: O horário final deve ser maior que o inicial.\n");
+            console.log("\nErro: O horário final deve ser maior que o inicial.\n");
             return;
         }
 
         // Verifica sobreposição de horários
         if (this.temConflito(data, horaInicio, horaFim)) {
-            console.log("Erro: Já existe uma consulta agendada nesse horário.\n");
+            console.log("\nErro: Já existe uma consulta agendada nesse horário.\n");
             return;
         }
 
         // Verifica se o paciente já possui uma consulta futura
         if (this.temConsultaFutura(cpf)) {
-            console.log("Erro: O paciente já possui um agendamento futuro.\n");
+            console.log("\nErro: O paciente já possui um agendamento futuro.\n");
             return;
         }
 
+        let pacienteSelecionado = null;
+
+        for (const paciente of cadastro.pacientes) {
+            if (paciente.cpf === cpf) {
+                pacienteSelecionado = paciente;
+                break;
+            }
+        }
+
         // Adiciona a consulta
-        this.consultas.push(new Consulta(cpf, data, horaInicio, horaFim));
+        this.consultas.push(new Consulta(pacienteSelecionado, data, horaInicio, horaFim));
 
         console.log("Agendamento realizado com sucesso!\n");
         return;
@@ -67,21 +76,22 @@ export default class Agenda {
     cancelarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!this.validador.valida_cpf(cadastro.pacientes.map(p => p.cpf), cpf)) {
-            console.log("Erro: paciente não cadastrado.\n");
+        if (!this.validador.valida_cpf(cpf)) {
+            return;
+        }
+
+        if (!this.validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
         if (!this.validador.valida_data(data)) {
-            console.log("Erro: Data inválida. Use o formato DD/MM/AAAA.\n");
             return;
         }
 
         const horaInicio = this.prompt("Hora inicial: ");
-        if (!this.validaHorario(horaInicio)) {
-            console.log("Erro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n");
+        if (!this.validador.validaHorario(horaInicio)) {
             return;
         }
 
@@ -114,35 +124,49 @@ export default class Agenda {
         return true;
     }
 
-    listarConsultas(opcao = "T", dataInicial = null, dataFinal = null) {
+    listarConsultas() {
+        
+        const opcao = this.prompt("Apresentar a agenda T-Toda ou P-Período: ");
+        if (!this.validador.valida_opcao_listagem_agenda(opcao)) {
+            return;
+        }
+
         let consultasFiltradas = this.consultas;
 
-        if (opcao === "P" && dataInicial && dataFinal) {
+        if (opcao === "P") {
+            const dataInicial = this.prompt("Data inicial: ");
+            
+            if (!this.validador.valida_data(dataInicial)) return;
+
+            const dataFinal = this.prompt("Data final: ");
+
+            if (!this.validador.valida_data(dataFinal)) return;
+
             const inicio = DateTime.fromFormat(dataInicial, "dd/MM/yyyy");
             const fim = DateTime.fromFormat(dataFinal, "dd/MM/yyyy");
 
             consultasFiltradas = this.consultas.filter(consulta => {
-                const dataConsulta = DateTime.fromFormat(consulta.data, "dd/MM/yyyy");
+                const dataConsulta = DateTime.fromFormat(consulta.data_consulta, "dd/MM/yyyy");
                 if (!(dataConsulta >= inicio && dataConsulta <= fim)) return false;
             });
         }
 
-        console.log("Listagem de Consultas:");
+        console.log("\n-------------------------------------------------------------");
+        console.log("   Data    H.Ini H.Fim Tempo Nome                   Dt.Nasc.");
+        console.log("-------------------------------------------------------------");
+
         consultasFiltradas
             .sort((a, b) => {
-                const dataA = DateTime.fromFormat(a.data, "dd/MM/yyyy").toMillis();
-                const dataB = DateTime.fromFormat(b.data, "dd/MM/yyyy").toMillis();
-                if (!(dataA - dataB || a.horaInicio - b.horaInicio)) return false;
+                const dataA = a.data_consulta.toMillis();
+                const dataB = b.data_consulta.toMillis();
+                if (!(dataA - dataB || a.hora_inicial - b.hora_inicial)) return false;
             })
             .forEach(consulta => {
                 console.log(
-                    `CPF: ${consulta.cpf}, Data: ${consulta.data}, Horário: ${consulta.horaInicio} - ${consulta.horaFim}`
+                    `${consulta.data_consulta} ${consulta.hora_inicial} ${consulta.hora_final} ${consulta.tempo} ${consulta.paciente.nome}                   ${consulta.paciente.data_nasc}`
                 );
             });
-    }
-
-    validaHorario(horario) {
-        return /^[0-1][0-9][0-5][0-9]$/.test(horario) && parseInt(horario.slice(0, 2)) >= 8 && parseInt(horario.slice(0, 2)) < 19;
+        console.log("-------------------------------------------------------------");
     }
 
     temConflito(data, horaInicio, horaFim) {

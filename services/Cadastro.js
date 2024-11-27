@@ -13,8 +13,11 @@ export default class Cadastro {
 
         const cpf = this.prompt("CPF: ");
         // Valida CPF
-        if (!this.validador.valida_cpf(this.pacientes.map(p => p.cpf), cpf)) {
-            console.log("Erro: CPF inválido.\n");
+        if (!this.validador.valida_cpf(cpf)) {
+            return;
+        }
+
+        if (!this.validador.consulta_cpf_cadastrado(this.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 

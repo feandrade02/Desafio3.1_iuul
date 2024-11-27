@@ -23,28 +23,28 @@ export default class Menu {
         return this.validarOpcao(opcao, [1, 2, 3, 4]);
     }
 
-    solicitarTexto(mensagem) {
-        const entrada = this.prompt(`${mensagem}: `).trim();
-        return entrada;
-    }
+    // solicitarTexto(mensagem) {
+    //     const entrada = this.prompt(`${mensagem}: `).trim();
+    //     return entrada;
+    // }
 
-    solicitarNumero(mensagem) {
-        const entrada = this.prompt(`${mensagem}: `).trim();
-        if (!/^\d+$/.test(entrada)) {
-            console.log("Entrada inválida. Digite apenas números.\n");
-            return this.solicitarNumero(mensagem);
-        }
-        return entrada;
-    }
+    // solicitarNumero(mensagem) {
+    //     const entrada = this.prompt(`${mensagem}: `).trim();
+    //     if (!/^\d+$/.test(entrada)) {
+    //         console.log("Entrada inválida. Digite apenas números.\n");
+    //         return this.solicitarNumero(mensagem);
+    //     }
+    //     return entrada;
+    // }
 
-    solicitarData(mensagem) {
-        const entrada = this.prompt(`${mensagem} (DD/MM/AAAA): `).trim();
-        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(entrada)) {
-            console.log("Data inválida. Use o formato DD/MM/AAAA.\n");
-            return this.solicitarData(mensagem);
-        }
-        return entrada;
-    }
+    // solicitarData(mensagem) {
+    //     const entrada = this.prompt(`${mensagem} (DD/MM/AAAA): `).trim();
+    //     if (!/^\d{2}\/\d{2}\/\d{4}$/.test(entrada)) {
+    //         console.log("Data inválida. Use o formato DD/MM/AAAA.\n");
+    //         return this.solicitarData(mensagem);
+    //     }
+    //     return entrada;
+    // }
 
     validarOpcao(opcao, opcoesValidas) {
         const opcaoNumerica = parseInt(opcao, 10);
