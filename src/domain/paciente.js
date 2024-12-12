@@ -1,31 +1,64 @@
-import { Model } from "sequelize";
-import Result from "./result";
+import { DateTime } from "luxon";
 
-/**
- * Classe Paciente
- */
+export default class Paciente {
+    #nome;
+    #cpf;
+    #data_nasc;
+    #idade;
 
-class Paciente extends Model {
-    /**
-     * Método fábrica para validação dos dados e criação do Paciente.
-     * 
-     * @param {string} nome
-     * @param {string} cpf
-     * @param {Date} data_nasc
-     * @returns Paciente ou uma lista de erros, em caso de erro de validação
-     */
-    static of(nome, cpf, data_nasc) {
-        const errors = [];
+    constructor(nome, cpf, data_nasc) {
+        this.#nome = nome;
+        this.#cpf = cpf;
+        this.#data_nasc = this.formata_data(data_nasc);
+        this.#idade = this.calcula_idade(data_nasc);
+    }
+    
+    calcula_idade(data_nasc) {
+        // Formato esperado da data de nascimento
+        const formato = "dd/MM/yyyy";
+   
+        // Tenta criar um objeto DateTime com a data fornecida
+        const nascimento = DateTime.fromFormat(data_nasc, formato);
+    
+        // Obtém a data atual
+        const hoje = DateTime.now();
 
-        //implementa validações
-
-        //utiliza o método estático build para construir o objeto mapeado para o BD
-        return errors.length == 0
-            ? Result.success(Paciente.build({ nome, cpf, data_nasc }))
-            : Result.failure(errors);
+        return Math.floor(hoje.diff(nascimento, "years").years);
     }
 
-    //podem ser colocados serviços aqui, ou tentar implementar nas classes de serviço
-}
+    formata_data(data) {
+        // Tenta criar um objeto DateTime a partir da string no formato "dd/MM/yyyy"
+        const formato = "dd/MM/yyyy";
+        const dataLuxon = DateTime.fromFormat(data, formato);
+        return dataLuxon.toFormat(formato);
+    }
 
-export default Paciente;
+    get nome() {
+        return this.#nome;
+    }
+
+    get cpf() {
+        return this.#cpf;
+    }
+
+    get data_nasc() {
+        return this.#data_nasc;
+    }
+
+    get idade() {
+        return this.#idade;
+    }
+
+    set muda_nome(nome_novo) {
+        this.#nome = nome_novo;
+    }
+
+    set muda_cpf(cpf_novo) {
+        this.#cpf = cpf_novo;
+    }
+
+    set muda_data_nasc(data_nasc_novo) {
+        this.#data_nasc = this.formata_data(data_nasc_novo);
+        this.#idade = this.calcula_idade(data_nasc_novo);
+    }
+}
