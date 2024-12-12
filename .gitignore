@@ -1,0 +1,6 @@
+# Ignorar arquivos de dependências
+node_modules/
+
+# Ignorar arquivos de ambiente e configuração sensível
+.env
+Config.js

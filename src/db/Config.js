@@ -4,7 +4,7 @@
 const dbConfig = {
     database: "consultorio",
     username: "postgres",
-    password: "Minha senha",
+    password: "Liceu2medio#2019",
     host: "localhost",
     dialect: "postgres",
 };

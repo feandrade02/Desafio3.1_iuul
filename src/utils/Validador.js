@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 
 export default class Validador {
 
-    valida_nome(nome) {
+    static valida_nome(nome) {
         if (typeof nome !== 'string' || nome.length < 5) {
             console.log("\nErro: O nome deve ter pelo menos 5 caracteres.\n");
             return false
@@ -15,7 +15,7 @@ export default class Validador {
         return true
     }
 
-    valida_cpf(cpf) {
+    static valida_cpf(cpf) {
         // Verifica se o CPF tem 11 dígitos ou se todos são iguais
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
             console.log("\nErro: CPF inválido.\n");
@@ -53,7 +53,7 @@ export default class Validador {
        return true;
    }
 
-   consulta_cpf_cadastrado(lista_cpfs, cpf) {
+   static consulta_cpf_cadastrado(lista_cpfs, cpf) {
     // Verifica se o CPF já está cadastrado
     if (lista_cpfs.includes(cpf)) {
         console.log("\nErro: CPF já cadastrado.\n")
@@ -62,7 +62,7 @@ export default class Validador {
     return true;
    }
 
-   consulta_cpf_nao_cadastrado(lista_cpfs, cpf) {
+   static consulta_cpf_nao_cadastrado(lista_cpfs, cpf) {
     // Verifica se o CPF não está cadastrado
     if (!lista_cpfs.includes(cpf)) {
         console.log("\nErro: CPF não cadastrado.\n")
@@ -71,7 +71,7 @@ export default class Validador {
     return true;
    }
 
-   valida_data(data) {
+   static valida_data(data) {
     
         const formato = "dd/MM/yyyy";
         const dataLuxon = DateTime.fromFormat(data, formato);
@@ -83,7 +83,7 @@ export default class Validador {
         return true;
     }
 
-    valida_idade(idade) {
+    static valida_idade(idade) {
         if (idade < 13) {
             console.log("\nErro: paciente deve ter pelo menos 13 anos.")
             return false;
@@ -92,7 +92,7 @@ export default class Validador {
         return true;
    }
 
-    validaHorario(horario) {
+    static validaHorario(horario) {
         if (!(/^[0-1][0-9][0-5][0-9]$/.test(horario) && parseInt(horario.slice(0, 2)) >= 8 && parseInt(horario.slice(0, 2)) < 19)) {
             console.log("\nErro: Horário inválido. Use o formato HHMM com intervalos de 15 minutos.\n")
             return false;
@@ -100,7 +100,7 @@ export default class Validador {
         return true;
     }
 
-    valida_opcao_listagem_agenda(opcao) {
+    static valida_opcao_listagem_agenda(opcao) {
         if (opcao != "P" && opcao != "T") {
             console.log("\nErro: opção inválida.\n");
             return false;
