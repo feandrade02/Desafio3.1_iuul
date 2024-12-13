@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import Validador from "../utils/Validador.js";
 import Consulta from "../domain/consulta.js";
 import promptSync from "prompt-sync";
 
@@ -7,33 +6,32 @@ export default class Agenda {
     constructor() {
         this.consultas = []; // Lista de consultas
         this.prompt = promptSync();
-        this.validador = new Validador();
     }
 
     agendarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!this.validador.valida_cpf(cpf)) {
+        if (!Validador.valida_cpf(cpf)) {
             return;
         }
 
-        if (!this.validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
+        if (!Validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
-        if (!this.validador.valida_data(data)) {
+        if (!Validador.valida_data(data)) {
             return;
         }
 
         const horaInicio = this.prompt("Hora inicial: ");
-        if (!this.validador.validaHorario(horaInicio)) {
+        if (!Validador.validaHorario(horaInicio)) {
             return;
         }
 
         const horaFim = this.prompt("Hora final: ");
-        if (!this.validador.validaHorario(horaFim)){
+        if (!Validador.validaHorario(horaFim)){
             return;
         }
 
@@ -76,22 +74,22 @@ export default class Agenda {
     cancelarConsulta(cadastro) {
 
         const cpf = this.prompt("CPF: ");
-        if (!this.validador.valida_cpf(cpf)) {
+        if (!Validador.valida_cpf(cpf)) {
             return;
         }
 
-        if (!this.validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
+        if (!Validador.consulta_cpf_nao_cadastrado(cadastro.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 
         const data = this.prompt("Data da consulta: ");
         // Validações iniciais
-        if (!this.validador.valida_data(data)) {
+        if (!Validador.valida_data(data)) {
             return;
         }
 
         const horaInicio = this.prompt("Hora inicial: ");
-        if (!this.validador.validaHorario(horaInicio)) {
+        if (!Validador.validaHorario(horaInicio)) {
             return;
         }
 
@@ -127,7 +125,7 @@ export default class Agenda {
     listarConsultas() {
         
         const opcao = this.prompt("Apresentar a agenda T-Toda ou P-Período: ");
-        if (!this.validador.valida_opcao_listagem_agenda(opcao)) {
+        if (!Validador.valida_opcao_listagem_agenda(opcao)) {
             return;
         }
 
@@ -136,11 +134,11 @@ export default class Agenda {
         if (opcao === "P") {
             const dataInicial = this.prompt("Data inicial: ");
             
-            if (!this.validador.valida_data(dataInicial)) return;
+            if (!Validador.valida_data(dataInicial)) return;
 
             const dataFinal = this.prompt("Data final: ");
 
-            if (!this.validador.valida_data(dataFinal)) return;
+            if (!Validador.valida_data(dataFinal)) return;
 
             const inicio = DateTime.fromFormat(dataInicial, "dd/MM/yyyy");
             const fim = DateTime.fromFormat(dataFinal, "dd/MM/yyyy");

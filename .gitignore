@@ -3,6 +3,6 @@ node_modules/
 
 # Ignorar arquivos de ambiente e configuração sensível
 .env
-Config.js
+src/db/Config.js
 
 rascunho.js

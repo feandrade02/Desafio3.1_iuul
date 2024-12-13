@@ -1,4 +1,3 @@
-import Validador from "../utils/Validador.js";
 import Paciente from "../domain/paciente.js";
 import promptSync from "prompt-sync";
 
@@ -6,24 +5,23 @@ export default class Cadastro {
     constructor() {
         this.pacientes = []; // Lista de pacientes
         this.prompt = promptSync();
-        this.validador = new Validador();
     }
 
     adicionarPaciente() {
 
         const cpf = this.prompt("CPF: ");
         // Valida CPF
-        if (!this.validador.valida_cpf(cpf)) {
+        if (!Validador.valida_cpf(cpf)) {
             return;
         }
 
-        if (!this.validador.consulta_cpf_cadastrado(this.pacientes.map(p => p.cpf), cpf)) {
+        if (!Validador.consulta_cpf_cadastrado(this.pacientes.map(p => p.cpf), cpf)) {
             return;
         }
 
         const nome = this.prompt("Nome: ");
         // Valida nome
-        if (!this.validador.valida_nome(nome)) {
+        if (!Validador.valida_nome(nome)) {
             return;
         }
 
@@ -32,12 +30,12 @@ export default class Cadastro {
         const paciente = new Paciente(nome, cpf, dataNascimento);
 
         // Valida data de nascimento
-        if (!this.validador.valida_data(paciente.data_nasc)) {
+        if (!Validador.valida_data(paciente.data_nasc)) {
             return;
         }
 
 
-        if (!this.validador.valida_idade(paciente.idade)) {
+        if (!Validador.valida_idade(paciente.idade)) {
             return;
         }
 

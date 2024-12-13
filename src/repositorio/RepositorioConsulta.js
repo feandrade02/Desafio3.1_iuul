@@ -30,6 +30,24 @@ class RepositorioConsulta {
     async buscaTodos() {
         return await Consulta.findAll();
     }
+
+    /**
+     * Recupera consultas dentro de um período de tempo fornecido
+     * 
+     * @param {Date} dataInicial Data inicial do período
+     * @param {Date} dataFinal Data final do período
+     * @returns Lista de consultas no período especificado
+     */
+    async buscaPorPeriodo(dataInicial, dataFinal) {
+        return await Consulta.findAll({
+            where: {
+                data_consulta: {
+                    [Op.between]: [dataInicial, dataFinal],
+                },
+            },
+            order: [["data_consulta", "ASC"]], // Ordena as consultas por data
+        });
+    }
 }
 
 const repositorioConsulta = new RepositorioConsulta();

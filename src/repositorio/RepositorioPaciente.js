@@ -10,7 +10,8 @@ class RepositorioPaciente {
      * @param {Paciente} paciente
      */
     async salva(paciente) {
-        if (paciente !== null) await paciente.save();
+        if (paciente !== null && !(await this.buscaPorCPF(paciente.cpf)))
+            await paciente.save();
     }
 
     /**
@@ -39,6 +40,28 @@ class RepositorioPaciente {
      */
     async buscaTodos() {
         return await Paciente.findAll();
+    }
+
+    /**
+     * Recupera todos os pacientes ordenados por CPF
+     * 
+     * @returns Lista de pacientes ordenada por CPF
+     */
+    async buscaOrdenadosPorCPF() {
+        return await Paciente.findAll({
+            order: [["cpf", "ASC"]], // Ordena os resultados em ordem crescente de CPF
+        });
+    }
+
+    /**
+     * Recupera todos os pacientes ordenados por nome
+     * 
+     * @returns Lista de pacientes ordenada por nome
+     */
+    async buscaOrdenadosPorNome() {
+        return await Paciente.findAll({
+            order: [["nome", "ASC"]], // Ordena os resultados em ordem crescente de nome
+        });
     }
 }
 
