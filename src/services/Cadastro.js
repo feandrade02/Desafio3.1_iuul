@@ -1,5 +1,5 @@
 import Validador from "../utils/Validador.js";
-import Paciente from "../domain/Paciente.js";
+import Paciente from "../domain/paciente.js";
 import promptSync from "prompt-sync";
 
 export default class Cadastro {

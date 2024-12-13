@@ -6,14 +6,13 @@ class App {
     constructor() {
         this.cadastro = new Cadastro();
         this.agenda = new Agenda();
-        this.menu = new Menu();
     }
 
     iniciar() {
         let continuar = true;
 
         while (continuar) {
-            const opcao = this.menu.menuPrincipal();
+            const opcao = Menu.menuPrincipal();
 
             switch (opcao) {
                 case 1:
@@ -36,7 +35,7 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = this.menu.menuPacientes();
+            const opcao = Menu.menuPacientes();
 
             switch (opcao) {
                 case 1:
@@ -64,7 +63,7 @@ class App {
         let continuar = true;
 
         while (continuar) {
-            const opcao = this.menu.menuAgenda();
+            const opcao = Menu.menuAgenda();
 
             switch (opcao) {
                 case 1:

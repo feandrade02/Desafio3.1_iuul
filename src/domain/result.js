@@ -44,7 +44,7 @@ class Result {
     }
 
     /**
-     * Cria o objeto em caso de sucesso
+     * Cria o objeto em caso de falha
      *
      * @param {Array} errors
      * @returns Objeto Resultado

@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import Validador from "../utils/Validador.js";
-import Consulta from "../domain/Consulta.js";
+import Consulta from "../domain/consulta.js";
 import promptSync from "prompt-sync";
 
 export default class Agenda {

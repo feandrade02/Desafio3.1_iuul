@@ -4,3 +4,5 @@ node_modules/
 # Ignorar arquivos de ambiente e configuração sensível
 .env
 Config.js
+
+rascunho.js
