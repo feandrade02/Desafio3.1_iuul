@@ -4,8 +4,6 @@ import Agenda from './services/Agenda.js';
 
 class App {
     constructor() {
-        this.cadastro = new Cadastro();
-        this.agenda = new Agenda();
     }
 
     iniciar() {
@@ -39,16 +37,16 @@ class App {
 
             switch (opcao) {
                 case 1:
-                    this.cadastro.adicionarPaciente();
+                    Cadastro.cadastrarPaciente();
                     break;
                 case 2:
-                    this.cadastro.excluirPaciente(this.agenda);
+                    Cadastro.excluirPaciente();
                     break;
                 case 3:
-                    this.cadastro.listarPacientes("cpf", this.agenda);
+                    Cadastro.listarPacientes();
                     break;
                 case 4:
-                    this.cadastro.listarPacientes("nome", this.agenda);
+                    Cadastro.listarPacientes(true);
                     break;
                 case 5:
                     continuar = false;
@@ -67,13 +65,13 @@ class App {
 
             switch (opcao) {
                 case 1:
-                    this.agenda.agendarConsulta(this.cadastro);
+                    Agenda.agendarConsulta();
                     break;
                 case 2:
-                    this.agenda.cancelarConsulta(this.cadastro);
+                    Agenda.cancelarConsulta();
                     break;
                 case 3:
-                    this.agenda.listarConsultas();
+                    Agenda.listarConsultas();
                     break;
                 case 4:
                     continuar = false;

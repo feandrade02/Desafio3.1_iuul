@@ -1,96 +1,94 @@
-import Paciente from "../domain/paciente.js";
 import promptSync from "prompt-sync";
+import { DateTime } from "luxon";
+
+import Paciente from "../domain/paciente.js";
+import Validador from "../utils/Validador.js";
+import repositorioPaciente from "../repositorio/RepositorioPaciente.js";
 
 export default class Cadastro {
     constructor() {
-        this.pacientes = []; // Lista de pacientes
         this.prompt = promptSync();
     }
 
-    adicionarPaciente() {
-
+    static async cadastrarPaciente() {
+        // solicita entrada dos dados
         const cpf = this.prompt("CPF: ");
-        // Valida CPF
-        if (!Validador.valida_cpf(cpf)) {
-            return;
-        }
-
-        if (!Validador.consulta_cpf_cadastrado(this.pacientes.map(p => p.cpf), cpf)) {
-            return;
-        }
+        if (!Validador.valida_cpf(cpf)) return;
 
         const nome = this.prompt("Nome: ");
-        // Valida nome
-        if (!Validador.valida_nome(nome)) {
-            return;
-        }
+        if (!Validador.valida_nome(nome)) return;
 
         const dataNascimento = this.prompt("Data de nascimento: ");
+        if (!Validador.valida_data(dataNascimento)) return;
 
-        const paciente = new Paciente(nome, cpf, dataNascimento);
+        // tenta criar objeto em memória
+        const result = Paciente.of(cpf, nome, dataNascimento);
 
-        // Valida data de nascimento
-        if (!Validador.valida_data(paciente.data_nasc)) {
-            return;
+        // verifica se o paciente foi criado
+        if (result.isSuccess) {
+            // paciente criado
+            // verifica se esse paciente já está cadastrado
+            if (await Validador.pacienteCadastrado(result.value.cpf)) {
+                console.log("\nErro: Paciente já foi cadastrado.\n");
+                return;
+            }
+            else {
+                await repositorioPaciente.salva(result.value);
+                console.log("Paciente cadastrado com sucesso!\n");
+                return;
+            }
         }
-
-
-        if (!Validador.valida_idade(paciente.idade)) {
-            return;
-        }
-
-        // Adiciona paciente à lista
-        this.pacientes.push(paciente);
-
-        console.log("Paciente cadastrado com sucesso!\n");
         return;
     }
 
-    excluirPaciente(agenda) {
-
+    static async excluirPaciente() {
+        // solicita cpf
         const cpf = this.prompt("CPF: ");
+        if (!Validador.valida_cpf(cpf)) return;
 
         // Verifica se o paciente existe
-        const index = this.pacientes.findIndex(paciente => paciente.cpf === cpf);
-        if (index === -1) {
-            console.log("Erro: Paciente não cadastrado.\n");
-            return false;
+        if (!Validador.pacienteCadastrado(cpf)) {
+            console.log("\nErro: Paciente não cadastrado.\n");
+            return;
         }
 
         // Verifica se o paciente tem consultas futuras
-        if (agenda.temConsultaFutura(cpf)) {
-            console.log("Erro: o paciente está agendado.\n");
-            return false;
+        if (await Validador.ConsultaFutura(cpf) !== null) {
+            console.log("\nErro: o paciente está agendado.\n");
+            return;
         }
 
         // Remove o paciente
-        this.pacientes.splice(index, 1);
+        await repositorioPaciente.remove(paciente)
         console.log("Paciente excluído com sucesso!\n");
-        return true;
+        return;
     }
 
-    listarPacientes(ordenacao = "cpf", agenda) {
-        // Ordena os pacientes por CPF ou nome
-        const pacientesOrdenados = [...this.pacientes].sort((a, b) => {
-            if (ordenacao === "nome") {
-                return a.nome.localeCompare(b.nome);
-            }
-            return a.cpf.localeCompare(b.cpf);
-        });
+    static async listarPacientes(porNome = false) {
+        // Determinar ordenação
+        const pacientesOrdenados = porNome
+            ? await repositorioPaciente.buscaOrdenadosPorNome()
+            : await repositorioPaciente.buscaOrdenadosPorCPF();
 
-        // Exibe os pacientes
+        // Exibe o cabeçalho da tabela
         console.log("\n------------------------------------------------------------");
         console.log("CPF         Nome                              Dt.Nasc. Idade");
         console.log("------------------------------------------------------------");
-        pacientesOrdenados.forEach(paciente => {
-            console.log(`${paciente.cpf} ${paciente.nome}                           ${paciente.data_nasc}  ${paciente.idade}`);
-
+        
+        for (const paciente of pacientesOrdenados) {
+            // Exibe as informações do paciente
+            console.log(`${paciente.cpf} ${paciente.nome.padEnd(35)} ${paciente.data_nasc}  ${paciente.idade}`);
+    
             // Verifica se o paciente tem uma consulta futura
-            const consultaFutura = agenda.consultas.find(consulta => consulta.cpf === paciente.cpf);
-            if (consultaFutura) {
-                console.log(`            Agendado para: ${consultaFutura.data}\n            ${consultaFutura.horaInicio} às ${consultaFutura.horaFim}`);
+            const consultaFutura = await Validador.ConsultaFutura(paciente.cpf);
+            if (consultaFutura !== null) {
+                console.log(`            Agendado para: ${consultaFutura.data_consulta}`);
+                console.log(`            ${consultaFutura.hora_inicial} às ${consultaFutura.hora_final}`);
             }
-        });
+        }
+        
+        // Exibe o rodapé da tabela
         console.log("------------------------------------------------------------");
+        return;
     }
 }

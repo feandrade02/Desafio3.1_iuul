@@ -23,6 +23,12 @@ class Consulta extends Model {
         if (!Validador.valida_data(data_consulta)) errors.push(ErroConsulta.DATA_INVALIDA);
         if (!Validador.validaHorario(hora_inicial)) errors.push(ErroConsulta.HORA_INVALIDA);
         if (!Validador.validaHorario(hora_final)) errors.push(ErroConsulta.HORA_INVALIDA);
+        if (!Validador.valida_ordem_horarios(hora_inicial, hora_final)) errors.push(ErroConsulta.ORDEM_INVALIDA);
+
+        // Tenta criar um objeto DateTime a partir da string no formato "dd/MM/yyyy"
+        const formato = "dd/MM/yyyy";
+        const dataLuxon = DateTime.fromFormat(data_consulta, formato);
+        data_consulta = dataLuxon.toFormat(formato); // Data da consulta formatada
 
         //utiliza o método estático build para construir o objeto mapeado para o BD
         return errors.length == 0

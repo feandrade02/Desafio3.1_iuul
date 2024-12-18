@@ -1,4 +1,6 @@
 import { DateTime } from "luxon";
+import repositorioConsulta from "../repositorio/RepositorioConsulta";
+import repositorioPaciente from "../repositorio/RepositorioPaciente";
 
 export default class Validador {
 
@@ -53,21 +55,10 @@ export default class Validador {
        return true;
    }
 
-   static consulta_cpf_cadastrado(lista_cpfs, cpf) {
-    // Verifica se o CPF já está cadastrado
-    if (lista_cpfs.includes(cpf)) {
-        console.log("\nErro: CPF já cadastrado.\n")
-        return false;
-    }
-    return true;
-   }
-
-   static consulta_cpf_nao_cadastrado(lista_cpfs, cpf) {
-    // Verifica se o CPF não está cadastrado
-    if (!lista_cpfs.includes(cpf)) {
-        console.log("\nErro: CPF não cadastrado.\n")
-        return false;
-    }
+   // Verifica se o paciente está cadastrado
+   static async pacienteCadastrado(cpf) {
+    const paciente = await repositorioPaciente.buscaPorCPF(cpf);
+    if (!paciente) return false;
     return true;
    }
 
@@ -106,5 +97,33 @@ export default class Validador {
             return false;
         }
         return true;
+    }
+
+    static valida_ordem_horarios(horaInicio, horaFinal) {
+        if (horaFinal <= horaInicio) {
+            console.log("\nErro: O horário final deve ser maior que o inicial.\n");
+            return false;
+        }
+        return true;
+    }
+
+    static async ConsultaFutura(cpf) {
+        // Obter a data de hoje como um objeto Luxon
+        const hoje = DateTime.now();
+
+        // Buscar todas as consultas incluindo o paciente associado
+        const consultas = await repositorioConsulta.buscaComPaciente(cpf);
+
+        // Filtrar consulta futura
+        const consultaFutura = consultas.find((consulta) => {
+            // Converter a data da consulta para um objeto Luxon
+            const dataConsulta = DateTime.fromFormat(consulta.data_consulta, "dd/MM/yyyy");
+
+            // Verificar se a consulta está no futuro
+            return dataConsulta > hoje;
+        });
+
+        // Retornar consulta futura, caso exista, ou então retornar null
+        return consultaFutura || null;
     }
 }

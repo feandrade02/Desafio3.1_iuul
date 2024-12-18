@@ -8,6 +8,9 @@ class ErroConsulta {
     static get HORA_INVALIDA() {
         return 2;
     }
+    static get ORDEM_INVALIDA() {
+        return 3;
+    }
 }
 
 export default ErroConsulta;

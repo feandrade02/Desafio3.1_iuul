@@ -10,7 +10,7 @@ class RepositorioPaciente {
      * @param {Paciente} paciente
      */
     async salva(paciente) {
-        if (paciente !== null && !(await this.buscaPorCPF(paciente.cpf)))
+        if (paciente !== null)
             await paciente.save();
     }
 
