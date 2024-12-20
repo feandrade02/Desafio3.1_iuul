@@ -1,4 +1,4 @@
-import Consulta from "../domain/consulta";
+import Consulta from "../domain/consulta.js";
 
 /**
  * Repositório de Consultas

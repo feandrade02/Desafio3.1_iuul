@@ -41,15 +41,19 @@ class Db {
         createModelPaciente(Paciente, this.#sequelize, Sequelize.DataTypes);
         createModelConsulta(Consulta, this.#sequelize, Sequelize.DataTypes);
 
-        // Cria os relacionamentos
+        // Cria os relacionamentos 1:N
         Paciente.hasMany(Consulta, {
           foreignKey: {
             allowNull: false,
           },
-          through: "PacienteConsulta",
           as: "consultas",
         });
-        Consulta.belongsTo(Paciente, { through: "PacienteConsulta", as: "pacientes" });
+        Consulta.belongsTo(Paciente, {
+            foreignKey: {
+                allowNull: false,
+            },
+            as: "paciente",
+        });
 
         return true;
     }

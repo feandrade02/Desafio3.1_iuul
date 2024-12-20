@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
-import repositorioConsulta from "../repositorio/RepositorioConsulta";
-import repositorioPaciente from "../repositorio/RepositorioPaciente";
+import repositorioConsulta from "../repositorio/RepositorioConsulta.js";
 
 export default class Validador {
 
@@ -53,13 +52,6 @@ export default class Validador {
        }
    
        return true;
-   }
-
-   // Verifica se o paciente está cadastrado
-   static async pacienteCadastrado(cpf) {
-    const paciente = await repositorioPaciente.buscaPorCPF(cpf);
-    if (!paciente) return false;
-    return true;
    }
 
    static valida_data(data) {

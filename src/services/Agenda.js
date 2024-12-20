@@ -1,34 +1,31 @@
 import { DateTime } from "luxon";
-import promptSync from "prompt-sync";
 
 import Consulta from "../domain/consulta.js";
 import Validador from "../utils/Validador.js";
 import repositorioConsulta from "../repositorio/RepositorioConsulta.js";
 
 export default class Agenda {
-    constructor() {
-        this.prompt = promptSync();
-    }
 
-    static async agendarConsulta() {
+    static async agendarConsulta(prompt) {
 
-        const cpf = this.prompt("CPF: ");
+        const cpf = prompt("CPF: ");
         if (!Validador.valida_cpf(cpf)) return;
 
         // Verifica se o paciente está cadastrado
-        if (!Validador.pacienteCadastrado(cpf)) {
+        const paciente = await repositorioPaciente.buscaPorCPF(cpf);
+        if (!paciente) {
             console.log("\nErro: Paciente não cadastrado.\n");
             return;
         }
 
-        const data = this.prompt("Data da consulta: ");
-        if (!Validador.valida_data(data)) return;
+        const data = prompt("Data da consulta: ");
+        // if (!Validador.valida_data(data)) return;
 
-        const horaInicio = this.prompt("Hora inicial: ");
-        if (!Validador.validaHorario(horaInicio)) return;
+        const horaInicio = prompt("Hora inicial: ");
+        // if (!Validador.validaHorario(horaInicio)) return;
 
-        const horaFim = this.prompt("Hora final: ");
-        if (!Validador.validaHorario(horaFim)) return;
+        const horaFim = prompt("Hora final: ");
+        // if (!Validador.validaHorario(horaFim)) return;
 
         const horaInicialLuxon = DateTime.fromFormat(horaInicio, "HHmm");
         const horaFinalLuxon = DateTime.fromFormat(horaFim, "HHmm");
@@ -61,21 +58,22 @@ export default class Agenda {
         return;
     }
 
-    static async cancelarConsulta() {
+    static async cancelarConsulta(prompt) {
 
-        const cpf = this.prompt("CPF: ");
+        const cpf = prompt("CPF: ");
         if (!Validador.valida_cpf(cpf)) return;
 
         // Verifica se o paciente está cadastrado
-        if (!Validador.pacienteCadastrado(cpf)) {
+        const paciente = await repositorioPaciente.buscaPorCPF(cpf);
+        if (!paciente) {
             console.log("\nErro: Paciente não cadastrado.\n");
             return;
         }
 
-        const data = this.prompt("Data da consulta: ");
+        const data = prompt("Data da consulta: ");
         if (!Validador.valida_data(data)) return;
 
-        const horaInicio = this.prompt("Hora inicial: ");
+        const horaInicio = prompt("Hora inicial: ");
         if (!Validador.validaHorario(horaInicio)) return;
 
         // Recupera a consulta correspondente
@@ -104,9 +102,9 @@ export default class Agenda {
         return;
     }
 
-    static async listarConsultas() {
+    static async listarConsultas(prompt) {
         
-        const opcao = this.prompt("Apresentar a agenda T-Toda ou P-Período: ").toUpperCase();
+        const opcao = prompt("Apresentar a agenda T-Toda ou P-Período: ").toUpperCase();
         if (!Validador.valida_opcao_listagem_agenda(opcao)) return;
 
         let consultas = [];

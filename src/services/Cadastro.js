@@ -1,34 +1,31 @@
-import promptSync from "prompt-sync";
-import { DateTime } from "luxon";
-
 import Paciente from "../domain/paciente.js";
 import Validador from "../utils/Validador.js";
 import repositorioPaciente from "../repositorio/RepositorioPaciente.js";
 
 export default class Cadastro {
-    constructor() {
-        this.prompt = promptSync();
-    }
 
-    static async cadastrarPaciente() {
+    static async cadastrarPaciente(prompt) {
         // solicita entrada dos dados
-        const cpf = this.prompt("CPF: ");
-        if (!Validador.valida_cpf(cpf)) return;
+        const cpf = prompt("CPF: ");
+        // if (!Validador.valida_cpf(cpf)) return;
 
-        const nome = this.prompt("Nome: ");
-        if (!Validador.valida_nome(nome)) return;
+        const nome = prompt("Nome: ");
+        // if (!Validador.valida_nome(nome)) return;
 
-        const dataNascimento = this.prompt("Data de nascimento: ");
-        if (!Validador.valida_data(dataNascimento)) return;
+        const dataNascimento = prompt("Data de nascimento: ");
+        // if (!Validador.valida_data(dataNascimento)) return;
 
         // tenta criar objeto em memória
-        const result = Paciente.of(cpf, nome, dataNascimento);
+        let result = Paciente.of(nome, cpf, dataNascimento);
 
+        console.log(result.isSuccess);
+        console.log(result.isFailure);
+        console.log(result.errors);
         // verifica se o paciente foi criado
         if (result.isSuccess) {
             // paciente criado
             // verifica se esse paciente já está cadastrado
-            if (await Validador.pacienteCadastrado(result.value.cpf)) {
+            if (await repositorioPaciente.buscaPorCPF(result.value.cpf)) {
                 console.log("\nErro: Paciente já foi cadastrado.\n");
                 return;
             }
@@ -41,13 +38,14 @@ export default class Cadastro {
         return;
     }
 
-    static async excluirPaciente() {
+    static async excluirPaciente(prompt) {
         // solicita cpf
-        const cpf = this.prompt("CPF: ");
+        const cpf = prompt("CPF: ");
         if (!Validador.valida_cpf(cpf)) return;
 
         // Verifica se o paciente existe
-        if (!Validador.pacienteCadastrado(cpf)) {
+        const paciente = await repositorioPaciente.buscaPorCPF(cpf);
+        if (!paciente) {
             console.log("\nErro: Paciente não cadastrado.\n");
             return;
         }

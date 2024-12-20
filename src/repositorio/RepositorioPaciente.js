@@ -1,4 +1,4 @@
-import Paciente from "../domain/paciente";
+import Paciente from "../domain/paciente.js";
 
 /**
  * Repositório de Pacientes

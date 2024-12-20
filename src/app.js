@@ -1,23 +1,24 @@
+import promptSync from 'prompt-sync';
+
 import Menu from './utils/Menu.js';
 import Cadastro from './services/Cadastro.js';
 import Agenda from './services/Agenda.js';
+import db from "./db/db.js"
 
 class App {
-    constructor() {
-    }
 
-    iniciar() {
+    iniciar(prompt) {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuPrincipal();
+            const opcao = Menu.menuPrincipal(prompt);
 
             switch (opcao) {
                 case 1:
-                    this.gerenciarPacientes();
+                    this.gerenciarPacientes(prompt);
                     break;
                 case 2:
-                    this.gerenciarAgenda();
+                    this.gerenciarAgenda(prompt);
                     break;
                 case 3:
                     continuar = false;
@@ -29,18 +30,18 @@ class App {
         }
     }
 
-    gerenciarPacientes() {
+    gerenciarPacientes(prompt) {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuPacientes();
+            const opcao = Menu.menuPacientes(prompt);
 
             switch (opcao) {
                 case 1:
-                    Cadastro.cadastrarPaciente();
+                    Cadastro.cadastrarPaciente(prompt);
                     break;
                 case 2:
-                    Cadastro.excluirPaciente();
+                    Cadastro.excluirPaciente(prompt);
                     break;
                 case 3:
                     Cadastro.listarPacientes();
@@ -57,21 +58,21 @@ class App {
         }
     }
 
-    gerenciarAgenda() {
+    gerenciarAgenda(prompt) {
         let continuar = true;
 
         while (continuar) {
-            const opcao = Menu.menuAgenda();
+            const opcao = Menu.menuAgenda(prompt);
 
             switch (opcao) {
                 case 1:
-                    Agenda.agendarConsulta();
+                    Agenda.agendarConsulta(prompt);
                     break;
                 case 2:
-                    Agenda.cancelarConsulta();
+                    Agenda.cancelarConsulta(prompt);
                     break;
                 case 3:
-                    Agenda.listarConsultas();
+                    Agenda.listarConsultas(prompt);
                     break;
                 case 4:
                     continuar = false;
@@ -85,4 +86,17 @@ class App {
 
 // Instancia e inicia o programa
 const app = new App();
-app.iniciar();
+
+const prompt = promptSync();
+
+const initialized = await db.init();
+
+if (!initialized) {
+    console.log("Problemas na conexão com o BD (fora do ar?)");
+    process.exit(1);
+}
+
+// Executar esse comando SOMENTE a primeira vez para criar as tabelas
+// await db.sequelize.sync({ force: true });
+
+app.iniciar(prompt);

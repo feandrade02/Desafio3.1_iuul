@@ -1,7 +1,7 @@
 import { Model } from "sequelize";
-import Result from "./result";
-import Validador from "../utils/Validador";
-import ErroConsulta from "./erro-consulta";
+import Result from "./result.js";
+import Validador from "../utils/Validador.js";
+import ErroConsulta from "./erro-consulta.js";
 
 /**
  * Classe Consulta
@@ -28,7 +28,7 @@ class Consulta extends Model {
         // Tenta criar um objeto DateTime a partir da string no formato "dd/MM/yyyy"
         const formato = "dd/MM/yyyy";
         const dataLuxon = DateTime.fromFormat(data_consulta, formato);
-        data_consulta = dataLuxon.toFormat(formato); // Data da consulta formatada
+        data_consulta = dataLuxon.toISODate(); // Data da consulta formatada em ISO
 
         //utiliza o método estático build para construir o objeto mapeado para o BD
         return errors.length == 0

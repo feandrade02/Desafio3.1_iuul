@@ -1,8 +1,8 @@
 import { Model } from "sequelize";
 import { DateTime } from "luxon";
-import Result from "./result";
-import ErroPaciente from "./erro-paciente";
-import Validador from "../utils/Validador";
+import Result from "./result.js";
+import ErroPaciente from "./erro-paciente.js";
+import Validador from "../utils/Validador.js";
 
 /**
  * Classe Paciente
@@ -21,24 +21,28 @@ class Paciente extends Model {
         const errors = [];
 
         // Validações
-        if (!Validador.valida_cpf(cpf)) errors.push(ErroPaciente.CPF_INVALIDO);
-
         if (!Validador.valida_nome(nome)) errors.push(ErroPaciente.NOME_INVALIDO);
+        
+        if (!Validador.valida_cpf(cpf)) errors.push(ErroPaciente.CPF_INVALIDO);
 
         if(!Validador.valida_data(data_nasc)) errors.push(ErroPaciente.DATA_INVALIDA);
         
         // Tenta criar um objeto DateTime a partir da string no formato "dd/MM/yyyy"
         const formato = "dd/MM/yyyy";
         const dataLuxon = DateTime.fromFormat(data_nasc, formato);
-        data_nasc = dataLuxon.toFormat(formato); // Data de nascimento formatada
-
+        data_nasc = dataLuxon.toFormat("yyyy-MM-dd"); // Data de nascimento formatada em "YYYY-MM-DD"
+        console.log(data_nasc);
+        
         // Calculo da idade do paciente
         const hoje = DateTime.now();
         const idade = Math.floor(hoje.diff(dataLuxon, "years").years);
+        console.log(idade);
 
         // Valida idade
         if (!Validador.valida_idade(idade)) errors.push(ErroPaciente.IDADE_INVALIDA);
 
+        console.log(cpf);
+        
         // utiliza o método estático build para construir o objeto mapeado para o BD
         return errors.length == 0
             ? Result.success(Paciente.build({ nome, cpf, data_nasc, idade }))

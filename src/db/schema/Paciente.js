@@ -16,7 +16,7 @@ const createModelPaciente = (Paciente, sequelize, DataTypes) => {
             nome: { type: DataTypes.STRING(100), allowNull: false },
             cpf: { type: DataTypes.STRING(11), allowNull: false },
             data_nasc: { type: DataTypes.DATEONLY, allowNull: false },
-            idade: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
+            idade: { type: DataTypes.INTEGER, allowNull: false },
         },
         {
             sequelize,
